@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Call UI</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black flex justify-center items-center min-h-screen">
+  <div class="bg-white w-[90vw] max-w-sm aspect-[9/16] rounded-lg flex flex-col justify-between items-center p-6" id="call-frame">
+    
+    <p class="mt-4 text-center text-lg">担当者に直接お話しできます。</p>
+    
+    <div class="flex flex-col items-center">
+      <div class="w-32 h-32 rounded-full bg-gray-300 flex justify-center items-center">
+        <svg class="w-16 h-16 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
+        </svg>
+      </div>
+      <p class="mt-4 font-semibold text-lg">龍泉寺担当者</p>
+      <p class="mt-2 text-base" id="status-text"></p>
+    </div>
+
+    <div class="mb-6">
+      <button id="call-button" class="bg-green-500 hover:bg-green-600 text-white rounded-full w-16 h-16 flex justify-center items-center">
+        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.11-.27c1.2.48 2.53.73 3.88.73a1 1 0 011 1V20a1 1 0 01-1 1C10.4 21 3 13.6 3 5a1 1 0 011-1h3.5a1 1 0 011 1c0 1.35.25 2.68.73 3.88.13.28.07.6-.27 1.11l-2.34 2.34z"/>
+        </svg>
+      </button>
+    </div>
+
+  </div>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script type="text/javascript" src="static/twilio.min.js"></script>
+  <script src="static/call.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+
+</body>
+</html>
