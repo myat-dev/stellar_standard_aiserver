@@ -47,8 +47,8 @@ class ChatSessionManager:
         self.context.session_id = self.active_session
         self.context.session_start_time = datetime.now().replace(microsecond=0)
         logger.info(f"セッション開始: {self.active_session}")
-        capture_image(self.active_session)
-        logger.info(f"画像キャプチャ完了")
+        # capture_image(self.active_session)
+        # logger.info(f"画像キャプチャ完了")
 
     def end_session(self):
         self.context.session_end_time = datetime.now().replace(microsecond=0)

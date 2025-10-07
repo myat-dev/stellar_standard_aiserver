@@ -1,10 +1,11 @@
 tools: 
-  call_person : True
+  call_person : False
   weather_info : True
-  train_info : True
-  delivery : True
-  dengon : True
-  information : True
+  train_info : False
+  delivery : False
+  dengon : False
+  information : False
+  websearch : False
 
 model:
   llm: 
@@ -59,7 +60,7 @@ dailogue:
   end_ask_phone_dengon : "申し訳ありません。正しい連絡先が貰えませんでしたので、受付を終了します。住職へ伝言を伝えておきます。お気をつけてお帰り下さい。"
 
 greeting:
-  greet : "龍泉寺にお越しいただきありがとうございます。\n"
+  greet : "こんにちは。ステラです。ご案内致しますので、何かお手伝いことありますか？\n"
   general : "何のご用件でしょうか？\n右側のマイクに向かってお話しください。"
   tsuketodoke : "付け届けのお渡しですが、\n対応できる者にお繋ぎしますので、\nお名前を教えていただけますか？\n右側のマイクに向かってお話しください。"
   setsubiqa : "販売機や設備の不具合、使い方のご確認のこと\nですが、対応できる者にお繋ぎしますので、\nお名前を教えていただけますか？\n右側のマイクに向かってお話しください。"

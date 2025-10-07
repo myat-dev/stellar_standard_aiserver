@@ -183,7 +183,8 @@ class CallPersonTool(BaseContactTool):
         logger.info(f"モード: {mode}, ボタンID: {self.context_memory.button_id}")
         self.reload_memory()
         button_id = self.context_memory.button_id
-        person2contact = BUTTON_USER_ID.get(button_id, [])
+        # person2contact = BUTTON_USER_ID.get(button_id, [])
+        person2contact = "user1"
 
         line_ids = self.decide_person2contact(mode, person2contact)
 

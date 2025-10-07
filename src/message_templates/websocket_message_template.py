@@ -92,6 +92,31 @@ class ChatActionMessage:
     def __repr__(self):
         return self.__str__()
     
+class URLActionMessage:
+    def __init__(self, url: str, action_type: str, params: UserProfile):
+        self.type = MessageType.URL_ACTION.value
+        self.url = url
+        self.action = ActionMessage(action_type, params)
+
+    def to_json(self) -> str:
+        # print(self.action.params.to_dict())
+        return json.dumps(
+            {
+                "type": self.type,
+                "message": self.url,
+                "action": {
+                    "action_type": self.action.action_type,
+                    "params": self.action.params.to_dict(),
+                },
+            }
+        )
+
+    def __str__(self):
+        return f"URLActionMessage(type='{self.type}', url='{self.url}', action={self.action})"
+
+    def __repr__(self):
+        return self.__str__()
+    
 class ConfirmActionMessage:
     def __init__(self, message: str, action_type: str, params: UserProfile):
         self.type = MessageType.CONFIRM_ACTION.value
@@ -111,7 +136,7 @@ class ConfirmActionMessage:
         )
 
     def __str__(self):
-        return f"ChatActionMessage(type='{self.type}', message='{self.message}', action={self.action})"
+        return f"ConfirmActionMessage(type='{self.type}', message='{self.message}', action={self.action})"
 
     def __repr__(self):
         return self.__str__()
@@ -136,6 +161,12 @@ class WebsocketMessageTemplate:
     ) -> ChatActionMessage:
         """Create a chat action message."""
         return ChatActionMessage(message, action_type, params)
+
+    def url_action_message(
+        self, url: str, action_type: str, params: UserProfile = None
+    ) -> URLActionMessage:
+        """Create a URL action message."""
+        return URLActionMessage(url, action_type, params)
     
     def confirm_action_message(
         self, message: str, action_type: str, params: UserProfile = None

@@ -5,7 +5,6 @@ from langchain.agents import AgentExecutor
 from src.agent.agent import AgentIO, OpenAIAgent, Output
 from src.agent.tool_loader import ToolLoader
 from src.helpers.conf_loader import AGENT_TOOLS, MODELS_CONF
-from src.helpers.maps import BUTTON_PROMPT_MAP
 from src.helpers.logger import logger
 class AgentManager:
     """Manages the agent execution and setup."""
@@ -50,7 +49,7 @@ class AgentManager:
         result = await self.executor.ainvoke(input_data, force_tool=False)
         return result
 
-    async def run(self, input_data: Dict[str, Any]) -> Output:
+    async def run_with_lock_tool(self, input_data: Dict[str, Any]) -> Output:
         if self.session_context.button_id != "button_1":
             # Phase 1: If locked, force run call_person
             if self.session_context.workflow_active:
@@ -71,6 +70,9 @@ class AgentManager:
             result = await self.executor.ainvoke(input_data, force_tool=True)
 
         return result
+
+    async def run(self, input_data: Dict[str, Any]) -> Output:
+        return await self.executor.ainvoke(input_data, force_tool=True)
 
     async def _run_locked_tool(
         self, tool_name: str, input_data: Dict[str, Any]
@@ -103,20 +105,20 @@ class AgentManager:
     def configure_for_button(self, button_id: str):
         """Configure prompt and tools based on the button ID."""
         # Define prompts per button
-        prompt_map = {
-            button_id: self.prompt_manager.get_prompt(prompt_key)
-            for button_id, prompt_key in BUTTON_PROMPT_MAP.items()
-        }
+        # prompt_map = {
+        #     button_id: self.prompt_manager.get_prompt(prompt_key)
+        #     for button_id, prompt_key in BUTTON_PROMPT_MAP.items()
+        # }
 
-        self.prompts = prompt_map.get(button_id, self.prompt_manager.get_prompt("default"))
+        # self.prompts = prompt_map.get(button_id, self.prompt_manager.get_prompt("default"))
         self.default_prompt = self.prompt_manager.get_prompt("default")
         self.tools = self.tool_loader.get_tools_for_button(button_id)
         self.default_tool = self.tool_loader.get_default_tool_for_button(button_id)
 
     def setup(self, initial_prompt: bool):
         if initial_prompt:
-            self.agent.update_prompt(self.prompts)
-            self.agent.update_tools(self.tools)
+            # self.agent.update_prompt(self.prompts)
+            # self.agent.update_tools(self.tools)
             self.executor = self._initialize_executor(self.tools)
         else:
             self.session_manager.clear_history()

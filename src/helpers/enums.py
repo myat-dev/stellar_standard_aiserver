@@ -12,6 +12,7 @@ class MessageType(Enum):
     ACTION = "action"
     CHAT_ACTION = "chat_action"
     CONFIRM_ACTION = "confirm_action"
+    URL_ACTION = "url_action"
 
 
 class ActionType(Enum):
@@ -41,4 +42,6 @@ class ActionType(Enum):
     CHECK_CURRENT_MODE = "check_current_mode"
     SHOW_PHONE_PAGE = "show_phone_page"
     END_OF_TTS = "end_of_TTS"
+    SHOW_POINT_OUT = "show_pointout"
+    SET_LANGUAGE = "set_language"
 

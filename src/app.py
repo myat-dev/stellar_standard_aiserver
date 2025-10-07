@@ -13,7 +13,6 @@ from src.api.phone_api import router as phone_router
 from src.helpers import logger
 from src.helpers.conf_loader import GREET_MSG, server_config_loader, DAILOGUE
 from src.helpers.enums import ActionType, MessageType, Mode
-from src.helpers.maps import BUTTON_PROMPT_MAP
 from src.helpers import system_flags
 from src.helpers.website_handler import handle_phonecall_action
 from src.llm.llm_manager import is_valid_japanese_phone_number
@@ -26,7 +25,7 @@ from src.main import (
 )
 
 app = FastAPI()
-app.include_router(webhook_router)
+app.include_router(webhook_router)  
 app.include_router(phone_router)
 
 app.mount(
@@ -144,6 +143,12 @@ async def process_action(action_type: str, params):
         case ActionType.END_SESSION.value:
             ws_manager.session_end_event.set()
             await end_session()
+        
+        case ActionType.SET_LANGUAGE.value:
+            logger.debug(f"Language selected: {params.name}")  # Debugging output
+            if params.name:
+                session_manager.get_context_memory().current_language = params.name
+                logger.info(f"Current language set to: {session_manager.get_context_memory().current_language}")
 
         case ActionType.INPUT_NAME.value:
             logger.debug(f"Name received: {params.name}")  # Debugging output
@@ -220,9 +225,10 @@ async def process_chat(user_input: str):
     """Process chat input and get agent response."""
 
     session_manager.update_chat_history(user_input, "")
+    language_instruction = _get_language_instruction(session_manager.get_context_memory().current_language) 
     response = await agent_executor.run(
         {
-            "input": user_input,
+            "input": f"{language_instruction}\n{user_input}",
             "chat_history": session_manager.get_chat_data()["chat_history"],
             "mode": server_config_loader.get_mode(),
         }
@@ -270,12 +276,9 @@ async def start_new_session_and_greet():
     agent_executor.configure_for_button(button_id)
     agent_executor.setup(initial_prompt=True)
 
-    prompt_key = BUTTON_PROMPT_MAP.get(button_id, "danka")
     greet_message = GREET_MSG["greet"]
-    if prompt_key != "delivery":
-        greet_message += GREET_MSG[prompt_key]
-        session_manager.update_chat_history(greet_message, "")
-        await ws_manager.send_to_client(message_manager.chat_message(greet_message))
+    session_manager.update_chat_history(greet_message, "")
+    await ws_manager.send_to_client(message_manager.chat_message(greet_message))
 
 
 async def end_session():
@@ -285,5 +288,16 @@ async def end_session():
     )
     ws_manager.clear_button_id()
     ws_manager.waiting_for_response = False
+
+def _get_language_instruction(current_language: str) -> str:
+    """Get strong language instruction"""
+    instructions = {
+        'ja': "【必ず日本語で回答】",
+        'en': "【YOU MUST RESPOND IN ENGLISH】",
+        'zh': "【必须用中文回答】",
+        'ko': "【반드시 한국어로 답변】",
+        'es': "【DEBES RESPONDER EN ESPAÑOL】"
+    }
+    return instructions.get(current_language, instructions['ja'])
 
 
