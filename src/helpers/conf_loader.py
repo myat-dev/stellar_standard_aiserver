@@ -10,6 +10,7 @@ class ConfigLoader:
         self.config_file = config_file
         self.config = self.load_yaml()
         self.current_mode = self.config.get("mode", "不在モード")  
+        self.current_language = self.config.get("language", "ja")  # Default to Japanese
 
     def load_yaml(self):
         """Load YAML configuration."""
@@ -33,6 +34,17 @@ class ConfigLoader:
             self.current_mode = new_mode
 
             logger.info(f"モード変更しました: {new_mode}")
+    
+    def update_language(self, new_language: str):
+        """Thread-safe update of language in YAML and server state."""
+        with self._lock:
+            self.config["language"] = new_language
+            self.save_config(self.config)  # Save updated config
+
+            # Update the current language in server state
+            self.current_language = new_language
+
+            logger.info(f"言語が変更されました: {new_language}")
 
     def save_config(self, config_data):
         """Save the given configuration to the YAML file."""
@@ -46,6 +58,10 @@ class ConfigLoader:
     def get_mode(self):
         """Get the current mode from memory."""
         return self.current_mode
+    
+    def get_language(self):
+        """Get the current language from memory."""
+        return self.current_language
 
 
 # Initialize Config Loaders

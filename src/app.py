@@ -16,6 +16,7 @@ from src.helpers.enums import ActionType, MessageType, Mode
 from src.helpers import system_flags
 from src.helpers.website_handler import handle_phonecall_action
 from src.llm.llm_manager import is_valid_japanese_phone_number
+from src.message_templates.websocket_message_template import UserProfile
 from src.main import (
     agent_executor,
     message_manager,
@@ -77,11 +78,15 @@ def shutdown():
 async def websocket_endpoint(websocket: WebSocket):
     """WebSocket endpoint to handle chat and triggers."""
     await ws_manager.connect(websocket)
-
+    #send current language
+    await ws_manager.send_to_client(
+        message_manager.action_message(ActionType.SET_LANGUAGE.value, UserProfile(name=server_config_loader.get_language()))
+    )
     try:
         while True:
             try:
                 message = await asyncio.wait_for(websocket.receive_text(), timeout=60)
+                
             except asyncio.TimeoutError:
                 logger.info("Waiting for conection")
                 if not system_flags.get_phone_call_active():
@@ -115,7 +120,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     asyncio.create_task(process_chat(data.message))
 
             elif data.type == MessageType.ACTION.value:
-                if session_manager.get_context_memory().session_id is not None or data.action_type == ActionType.START_SESSION.value or data.action_type == ActionType.PHONECALL_ACTION.value or data.action_type == ActionType.PHONEEND_ACTION.value or data.action_type == ActionType.CHECK_CURRENT_MODE.value:
+                if session_manager.get_context_memory().session_id is not None or data.action_type == ActionType.START_SESSION.value or data.action_type == ActionType.PHONECALL_ACTION.value or data.action_type == ActionType.PHONEEND_ACTION.value or data.action_type == ActionType.CHECK_CURRENT_MODE.value or data.action_type == ActionType.SET_LANGUAGE.value:
                     asyncio.create_task(process_action(data.action_type, data.params))
 
             elif data.type == MessageType.CHAT_ACTION.value:
@@ -147,8 +152,7 @@ async def process_action(action_type: str, params):
         case ActionType.SET_LANGUAGE.value:
             logger.debug(f"Language selected: {params.name}")  # Debugging output
             if params.name:
-                session_manager.get_context_memory().current_language = params.name
-                logger.info(f"Current language set to: {session_manager.get_context_memory().current_language}")
+                server_config_loader.update_language(params.name)
 
         case ActionType.INPUT_NAME.value:
             logger.debug(f"Name received: {params.name}")  # Debugging output
@@ -225,7 +229,7 @@ async def process_chat(user_input: str):
     """Process chat input and get agent response."""
 
     session_manager.update_chat_history(user_input, "")
-    language_instruction = _get_language_instruction(session_manager.get_context_memory().current_language) 
+    language_instruction = _get_language_instruction(server_config_loader.get_language()) 
     response = await agent_executor.run(
         {
             "input": f"{language_instruction}\n{user_input}",
@@ -276,7 +280,7 @@ async def start_new_session_and_greet():
     agent_executor.configure_for_button(button_id)
     agent_executor.setup(initial_prompt=True)
 
-    greet_message = GREET_MSG["greet"]
+    greet_message = GREET_MSG[f"greet_{server_config_loader.get_language()}"]
     session_manager.update_chat_history(greet_message, "")
     await ws_manager.send_to_client(message_manager.chat_message(greet_message))
 
@@ -292,11 +296,11 @@ async def end_session():
 def _get_language_instruction(current_language: str) -> str:
     """Get strong language instruction"""
     instructions = {
-        'ja': "【必ず日本語で回答】",
-        'en': "【YOU MUST RESPOND IN ENGLISH】",
-        'zh': "【必须用中文回答】",
-        'ko': "【반드시 한국어로 답변】",
-        'es': "【DEBES RESPONDER EN ESPAÑOL】"
+        'ja-JP': "【必ず日本語で回答】",
+        'en-US': "【YOU MUST RESPOND IN ENGLISH】",
+        'zh-CN': "【必须用中文回答】",
+        'ko-KR': "【반드시 한국어로 답변】",
+        'es-ES': "【DEBES RESPONDER EN ESPAÑOL】"
     }
     return instructions.get(current_language, instructions['ja'])
 

@@ -60,7 +60,11 @@ dailogue:
   end_ask_phone_dengon : "申し訳ありません。正しい連絡先が貰えませんでしたので、受付を終了します。住職へ伝言を伝えておきます。お気をつけてお帰り下さい。"
 
 greeting:
-  greet : "こんにちは。ステラです。ご案内致しますので、何かお手伝いことありますか？\n"
+  greet_ja-JP : "こんにちは。ステラです。ご案内致しますので、何かお手伝いことありますか？\n"
+  greet_en-US : "Hello, I am Stella. How can I assist you today?\n"
+  greet_zh-CN : "您好，我是Stella。我能为您做些什么？\n"
+  greet_ko-KR : "안녕하세요. 스텔라입니다. 안내해 드리겠습니다. 무엇을 도와드릴까요?\n"
+  greet_es-ES : "Hola, soy Stella. ¿En qué puedo ayudarte hoy?\n"
   general : "何のご用件でしょうか？\n右側のマイクに向かってお話しください。"
   tsuketodoke : "付け届けのお渡しですが、\n対応できる者にお繋ぎしますので、\nお名前を教えていただけますか？\n右側のマイクに向かってお話しください。"
   setsubiqa : "販売機や設備の不具合、使い方のご確認のこと\nですが、対応できる者にお繋ぎしますので、\nお名前を教えていただけますか？\n右側のマイクに向かってお話しください。"
