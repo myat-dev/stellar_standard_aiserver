@@ -191,9 +191,9 @@ class ShowWeatherTool(BaseTool):
         action_message = self.message_manager.url_action_message(website_url,
             ActionType.SHOW_WEATHER.value
         )
-        point_out = self.message_manager.action_message(ActionType.SHOW_POINT_OUT.value)
+        
         await self.ws_manager.send_to_client(action_message)
-        await self.ws_manager.send_to_client(point_out)
+        
         return response_message
 
     def _run(

@@ -117,8 +117,12 @@ async def websocket_endpoint(websocket: WebSocket):
 
             if data.type == MessageType.CHAT.value:
                 if session_manager.get_context_memory().session_id is not None:
+                    if session_manager.get_context_memory().last_tool_name == "weather_info":
+                        await ws_manager.send_to_client(
+                            message_manager.action_message(ActionType.HIDE_WEBVIEW.value)
+                        )
                     asyncio.create_task(process_chat(data.message))
-
+                        
             elif data.type == MessageType.ACTION.value:
                 if session_manager.get_context_memory().session_id is not None or data.action_type == ActionType.START_SESSION.value or data.action_type == ActionType.PHONECALL_ACTION.value or data.action_type == ActionType.PHONEEND_ACTION.value or data.action_type == ActionType.CHECK_CURRENT_MODE.value or data.action_type == ActionType.SET_LANGUAGE.value:
                     asyncio.create_task(process_action(data.action_type, data.params))
@@ -219,11 +223,10 @@ async def process_action(action_type: str, params):
             
         case ActionType.END_OF_TTS.value:
             if session_manager.get_context_memory().session_id is not None:
-                if session_manager.get_context_memory().last_tool_name == "information" or session_manager.chat_history[-1][-1] == DAILOGUE["rag_fallback_message"]:
+                if session_manager.get_context_memory().last_tool_name == "weather_info" or session_manager.chat_history[-1][-1] == DAILOGUE["rag_fallback_message"]:
                     await ws_manager.send_to_client(
-                        message_manager.action_message(ActionType.SHOW_TOP.value)
+                        message_manager.action_message(ActionType.SHOW_POINT_OUT.value)
                     )
-                    session_manager.end_session()
 
 async def process_chat(user_input: str):
     """Process chat input and get agent response."""
@@ -302,6 +305,6 @@ def _get_language_instruction(current_language: str) -> str:
         'ko-KR': "【반드시 한국어로 답변】",
         'es-ES': "【DEBES RESPONDER EN ESPAÑOL】"
     }
-    return instructions.get(current_language, instructions['ja'])
+    return instructions.get(current_language, instructions['ja-JP'])
 
 

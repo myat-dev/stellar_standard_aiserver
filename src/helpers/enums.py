@@ -44,4 +44,5 @@ class ActionType(Enum):
     END_OF_TTS = "end_of_TTS"
     SHOW_POINT_OUT = "show_pointout"
     SET_LANGUAGE = "set_language"
+    HIDE_WEBVIEW = "hide_webview"
 

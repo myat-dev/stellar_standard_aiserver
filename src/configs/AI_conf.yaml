@@ -5,7 +5,7 @@ tools:
   delivery : False
   dengon : False
   information : False
-  websearch : False
+  websearch : True
 
 model:
   llm: 
