@@ -1,7 +1,7 @@
 tools: 
   call_person : False
   weather_info : True
-  train_info : False
+  contact_person : True
   delivery : False
   dengon : False
   information : False

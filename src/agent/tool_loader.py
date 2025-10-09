@@ -2,9 +2,8 @@ from typing import Any, Callable, Dict, List, Tuple
 
 from src.tools.call_person_tool import CallPersonTool
 from src.tools.delivery_tool import DeliveryTool
-from src.tools.dengon_tool import DengonTool
 from src.tools.information_tool import InformationTool, create_retriever
-from src.tools.train_tool import ShowTrainTool
+from src.tools.contact_person_tool import ContactPersonTool
 from src.tools.weather_tool import ShowWeatherTool
 from src.tools.websearch_tool import WebSearchTool
 
@@ -38,18 +37,12 @@ class ToolLoader:
                 session_manager=self.session_manager,
                 user_profile=self.user_profile,
             ),
-            "dengon": lambda: DengonTool(
-                ws_manager=self.ws_manager,
-                message_manager=self.message_manager,
-                session_manager=self.session_manager,
-                user_profile=self.user_profile,
-            ),
             "weather_info": lambda: ShowWeatherTool(
                 ws_manager=self.ws_manager,
                 message_manager=self.message_manager,
                 session_manager=self.session_manager,
-            ),
-            "train_info": lambda: ShowTrainTool(
+            ), 
+            "contact_person": lambda: ContactPersonTool(
                 ws_manager=self.ws_manager,
                 message_manager=self.message_manager,
                 session_manager=self.session_manager,
@@ -70,7 +63,7 @@ class ToolLoader:
 
         # Map button ID to list of tools and their default
         self.button_tool_map: Dict[str, List[str]] = {
-            "button_1": ["weather_info", "websearch", "information"],
+            "button_1": ["weather_info", "websearch", "information", "contact_person"],
         }
 
         self.default_tool_map: Dict[str, str] = {

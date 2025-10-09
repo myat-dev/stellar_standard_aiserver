@@ -13,37 +13,37 @@ from src.helpers.enums import ActionType
 from src.message_templates.websocket_message_template import WebsocketMessageTemplate
 
 
-class ShowTrainScheduleToolInput(BaseModel):
+class ContactPersonToolInput(BaseModel):
     pass
 
 
-class ShowTrainTool(BaseTool):
-    name: str = "train_info"
+class ContactPersonTool(BaseTool):
+    name: str = "contact_person"
     description: str = (
-        "電車の時刻表を見たい時に役に立つツール" "京王電鉄時刻表だけ見えます"
+        "担当者と直接繋ぐツール"
     )
-    args_schema: Type[BaseModel] = ShowTrainScheduleToolInput
+    args_schema: Type[BaseModel] = ContactPersonToolInput
     ws_manager: Optional[WebSocketManager] = None
     message_manager: Optional[WebsocketMessageTemplate] = None
     session_manager: Optional[ChatSessionManager] = None
     return_direct: bool = True
 
-    async def show_train_info(self):
-        action_message = self.message_manager.action_message(
-            ActionType.SHOW_TRAIN.value
+    async def contact_person(self):
+        action_message = self.message_manager.url_action_message("http://localhost:8080/phone",
+            ActionType.SHOW_PHONE_PAGE.value
         )
         await self.ws_manager.send_to_client(action_message)
-        return "京王電鉄時刻表はこちらの画面からご覧ください。"
+        return "担当者とお繋ぎしますので、担当者をお選びください。" 
 
     def _run(
         self,
         run_manager: Optional[CallbackManagerForToolRun] = None,
     ) -> str:
-        return self.show_train_info()
+        return self.contact_person()
 
     async def _arun(
         self,
         run_manager: Optional[AsyncCallbackManagerForToolRun] = None,
     ) -> str:
         self.session_manager.context.last_tool_name = self.name
-        return await self.show_train_info()
+        return await self.contact_person()

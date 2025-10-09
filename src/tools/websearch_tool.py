@@ -23,6 +23,8 @@ class WebSearchTool(BaseTool):
     description: str = (
         "Useful for retrieving real-time information from the internet, such as current news and time, and general search queries. "
         "It should not be used for harmful or unethical purposes."
+        "Your location is Japan." \
+        "Your company name is 株式会社ステラリンク and when people talk ステラリンク, it is about the company" \
     )
     args_schema: Type[BaseModel] = WebSearchToolInput
     ws_manager: Optional[WebSocketManager] = None

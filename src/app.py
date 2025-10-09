@@ -93,9 +93,9 @@ async def websocket_endpoint(websocket: WebSocket):
                     await ws_manager.send_to_client(
                         message_manager.action_message(ActionType.SHOW_TOP.value)
                     )
-                    if session_manager.get_context_memory().session_id:
-                        await ws_manager.send_to_client(message_manager.chat_message("タイムアウトしました。もう一度ボタンを押してください。"))
-                        await end_session()
+                    # if session_manager.get_context_memory().session_id:
+                    #     await ws_manager.send_to_client(message_manager.chat_message("タイムアウトしました。もう一度ボタンを押してください。"))
+                    #     await end_session()
                 continue
 
             if message == "exit":
@@ -117,7 +117,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
             if data.type == MessageType.CHAT.value:
                 if session_manager.get_context_memory().session_id is not None:
-                    if session_manager.get_context_memory().last_tool_name == "weather_info":
+                    if session_manager.get_context_memory().last_tool_name == "weather_info" or session_manager.get_context_memory().last_tool_name == "contact_person":
                         await ws_manager.send_to_client(
                             message_manager.action_message(ActionType.HIDE_WEBVIEW.value)
                         )
@@ -223,10 +223,11 @@ async def process_action(action_type: str, params):
             
         case ActionType.END_OF_TTS.value:
             if session_manager.get_context_memory().session_id is not None:
-                if session_manager.get_context_memory().last_tool_name == "weather_info" or session_manager.chat_history[-1][-1] == DAILOGUE["rag_fallback_message"]:
+                if session_manager.get_context_memory().last_tool_name == "weather_info":
                     await ws_manager.send_to_client(
                         message_manager.action_message(ActionType.SHOW_POINT_OUT.value)
                     )
+                    session_manager.get_context_memory().last_tool_name = None
 
 async def process_chat(user_input: str):
     """Process chat input and get agent response."""
