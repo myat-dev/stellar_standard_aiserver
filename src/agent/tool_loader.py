@@ -1,12 +1,10 @@
 from typing import Any, Callable, Dict, List, Tuple
 
-from src.tools.call_person_tool import CallPersonTool
-from src.tools.delivery_tool import DeliveryTool
-from src.tools.information_tool import InformationTool, create_retriever
+from src.tools.information_tool import InformationTool
 from src.tools.contact_person_tool import ContactPersonTool
 from src.tools.weather_tool import ShowWeatherTool
 from src.tools.websearch_tool import WebSearchTool
-
+from src.tools.rag_builder import build_all_retrievers
 
 class ToolLoader:
     def __init__(
@@ -22,21 +20,9 @@ class ToolLoader:
         self.message_manager = message_manager
         self.session_manager = session_manager
         self.user_profile = user_profile
-        self.retriever = create_retriever()
+        self.retrievers = build_all_retrievers()
 
         self.tool_factories: Dict[str, Callable[[], Any]] = {
-            "call_person": lambda: CallPersonTool(
-                ws_manager=self.ws_manager,
-                message_manager=self.message_manager,
-                session_manager=self.session_manager,
-                user_profile=self.user_profile,
-            ),
-            "delivery": lambda: DeliveryTool(
-                ws_manager=self.ws_manager,
-                message_manager=self.message_manager,
-                session_manager=self.session_manager,
-                user_profile=self.user_profile,
-            ),
             "weather_info": lambda: ShowWeatherTool(
                 ws_manager=self.ws_manager,
                 message_manager=self.message_manager,
@@ -52,22 +38,33 @@ class ToolLoader:
                 message_manager=self.message_manager,
                 session_manager=self.session_manager,
             ),
-            "information": lambda: InformationTool(
-                retriever=self.retriever,
+            "faq_tool": lambda: InformationTool(
+                retriever=self.retrievers["company_faq"],
                 ws_manager=self.ws_manager,
                 message_manager=self.message_manager,
                 session_manager=self.session_manager,
                 user_profile=self.user_profile,
+                name="faq_tool",
+                description="会社やステラリンクに関するFAQ情報を取得するツール。",
+            ),
+            "support_tool": lambda: InformationTool(
+                retriever=self.retrievers["customer_service"],
+                ws_manager=self.ws_manager,
+                message_manager=self.message_manager,
+                session_manager=self.session_manager,
+                user_profile=self.user_profile,
+                name="support_tool",
+                description="訪問者対応や顧客サポートに関する質問に答えるツール。",
             ),
         }
 
         # Map button ID to list of tools and their default
         self.button_tool_map: Dict[str, List[str]] = {
-            "button_1": ["weather_info", "websearch", "information", "contact_person"],
+            "button_1": ["weather_info", "websearch", "support_tool", "contact_person", "faq_tool"],
         }
 
         self.default_tool_map: Dict[str, str] = {
-            "button_1": "information",
+            "button_1": "support_tool",
         }
 
     def get_tools_by_keys(self, tool_keys: List[str]) -> List[Any]:

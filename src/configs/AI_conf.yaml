@@ -3,9 +3,9 @@ tools:
   weather_info : True
   contact_person : True
   delivery : False
-  dengon : False
-  information : False
-  websearch : True
+  support_tool : True
+  faq_tool : True
+  websearch : False
 
 model:
   llm: 
@@ -17,9 +17,15 @@ model:
     chunk_overlap: 20
 
 rag:
-  source_data : "data/ryusenji_rag_information.xlsx"
-  vector_db : "data/faiss_index"
-  track_file : "data/timestamp.txt"
+  datasets:
+    - name: company_faq
+      source_data: "data/stellarlink_faq_ja.xlsx"
+      vector_db: "data/company_faq_index"
+      track_file: "data/timestamp_company.txt"
+    - name: customer_service
+      source_data: "data/visitor_reception_faq_ja.xlsx"
+      vector_db: "data/customer_service_index"
+      track_file: "data/timestamp_support.txt"
 
 dailogue:
   ask_purpose_retry_message : "上手く聞き取れませんでした。\nご用件をもう一度お願いします。"

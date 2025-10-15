@@ -1,0 +1,127 @@
+html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #ffffff;
+      overflow: hidden;
+      font-family: "Noto Sans JP", sans-serif;
+}
+
+#call-frame {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 60px 20px;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+
+#contact-list{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 40px 20px;
+  background-color: #ffffff;
+  box-sizing: border-box;
+}
+
+#title {
+  font-size: 30px;
+  font-weight: 600;
+  text-align: center;
+  color: #111827;
+  margin-top: 10px;
+}
+
+#branch-header {
+  font-size: 30px;
+  font-weight: 600;
+  text-align: center;
+  color: #111827;
+  margin-bottom: 10px;
+}
+
+#nametitle {
+  font-size: 30px;
+  font-weight: 600;
+  text-align: center;
+  color: #111827;
+  margin-top: 50px;
+}
+
+#agent-name {
+  font-size: 30px;
+  font-weight: 700;
+  text-align: center;
+  color: #111827;
+  margin-top: 20px;
+}
+
+#status-text {
+    font-size: 30px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+#avatar {
+  width: 260px;
+  height: 260px;
+  background-color: #d1d5db;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 40px;
+}
+
+#avatar svg {
+  width: 150px;
+  height: 150px;
+  color: #4b5563;
+}
+
+#call-button {
+  background-color: #22c55e;
+  color: white;
+  width: 100px;
+  height: 50px;
+  border-radius: 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+  transition: background-color 0.3s;
+  margin-bottom: 60px;
+}
+
+#call-button:hover {
+  background-color: #16a34a;
+}
+
+#call-button svg {
+  width: 46px;
+  height: 46px;
+  color: white;
+}
+
+#contact-button {
+  background-color: #263A4D;
+  color: white;
+  font-size: 20px;
+  text-align: center;
+  width: 150px;
+  height: 50px;
+  border-radius: 5%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+  transition: background-color 0.3s;
+  margin-bottom: 20px;
+}

@@ -90,4 +90,4 @@ NGROK_URL = server_config.get("ngrok_url", "")
 PHONECALL_URL = server_config.get("phonecall_url", "http://127.0.0.1:8080/phone")
 OPEN_LINE_MESSAGES = server_config.get("line_messages", False)
 
-logger.info(f"サーバー起動 モード: {server_config_loader.get_mode()}")
+# logger.info(f"サーバー起動 モード: {server_config_loader.get_mode()}")

@@ -46,6 +46,11 @@ def read_root():
     html_path = Path(__file__).parent / "static" / "index.html"
     return html_path.read_text(encoding="utf-8")
 
+@app.get("/contactlist", response_class=HTMLResponse)
+def contact_list():
+    html_path = Path(__file__).parent / "static" / "namelist.html"
+    return html_path.read_text(encoding="utf-8")
+
 @app.get("/phone", response_class=HTMLResponse)
 def read_phone():
     html_path = Path(__file__).parent / "static" / "phone.html"
@@ -121,6 +126,7 @@ async def websocket_endpoint(websocket: WebSocket):
                         await ws_manager.send_to_client(
                             message_manager.action_message(ActionType.HIDE_WEBVIEW.value)
                         )
+                        session_manager.get_context_memory().last_tool_name = None
                     asyncio.create_task(process_chat(data.message))
                         
             elif data.type == MessageType.ACTION.value:
@@ -227,7 +233,6 @@ async def process_action(action_type: str, params):
                     await ws_manager.send_to_client(
                         message_manager.action_message(ActionType.SHOW_POINT_OUT.value)
                     )
-                    session_manager.get_context_memory().last_tool_name = None
 
 async def process_chat(user_input: str):
     """Process chat input and get agent response."""

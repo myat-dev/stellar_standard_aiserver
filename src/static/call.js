@@ -32,6 +32,7 @@ async function startupClient() {
       console.log("Got a token.");
       token = data.token; 
       await loadPhoneNumber();
+      console.log("Initializing device...");
       initializeDevice();
     } catch (err) {
       console.log(err);
@@ -39,29 +40,14 @@ async function startupClient() {
     }
 }
 
-
-async function loadPhoneNumber(){
-    try {
-        const response = await fetch("static/config.yaml");
-        const yamlText = await response.text();
-        const config = jsyaml.load(yamlText);
-
-        if (config.callMode === "phone") {
-            const phoneNumber = config.phoneNumber;
-            console.log("Calling real phone number:", phoneNumber);
-            params = { To: phoneNumber }; // ✅ Real phone number
-        } else if (config.callMode === "client") {
-            const clientName = config.clientName;
-            console.log("Calling client:", clientName);
-            params = { To: `client:${clientName}` };
-        } else {
-            console.error("Invalid callMode in config.yaml (use 'phone' or 'client')");
-        }
-    } catch (error) {
-        console.error("Failed to load phone number from config.yaml:", error);
-    }
+async function loadPhoneNumber() {
+  if (window.selectedPhoneNumber && window.selectedPhoneNumber.trim() !== "") {
+    console.log("📞 Using phone number from contact:", window.selectedPhoneNumber);
+    params = { To: window.selectedPhoneNumber };
+  } else {
+    console.error("⚠️ No phone number found! Please select a contact first.");
+  }
 }
-
 
 function initializeDevice() {
     device = new Twilio.Device(token, {

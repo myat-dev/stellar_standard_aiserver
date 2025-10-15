@@ -29,7 +29,7 @@ class ContactPersonTool(BaseTool):
     return_direct: bool = True
 
     async def contact_person(self):
-        action_message = self.message_manager.url_action_message("http://localhost:8080/phone",
+        action_message = self.message_manager.url_action_message("http://localhost:8080/contactlist",
             ActionType.SHOW_PHONE_PAGE.value
         )
         await self.ws_manager.send_to_client(action_message)
