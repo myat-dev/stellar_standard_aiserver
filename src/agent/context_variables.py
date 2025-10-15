@@ -13,7 +13,6 @@ class ContextMemory:
         self.name: Optional[str] = None
         self.purpose: Optional[str] = None
         self.phone: Optional[str] = None
-        self.dengon: Optional[str] = None
 
         self.name_retry: int = 0
         self.purpose_retry: int = 0

@@ -1,8 +1,6 @@
 tools: 
-  call_person : False
   weather_info : True
   contact_person : True
-  delivery : False
   support_tool : True
   faq_tool : True
   websearch : False
@@ -28,43 +26,7 @@ rag:
       track_file: "data/timestamp_support.txt"
 
 dailogue:
-  ask_purpose_retry_message : "上手く聞き取れませんでした。\nご用件をもう一度お願いします。"
-  ask_otakiage_message : "古いお札については、倉庫の右側にある木箱に\nお入れいただき、画面左下の\n「戻る」ボタンを押して、そのままお帰り下さい。\n千羽鶴やその他大きいものは住職に\nお繋ぎいたしますので、お名前を教えて下さい。"
-  ask_name_message : "お名前を教えていただけますか？\n右側のマイクに向かってお話しください。"
-  ask_company_name_message : "会社名とお名前を教えていただけますか？\n右側のマイクに向かってお話しください。"
-  ask_phone_message : "ご連絡先を教えてください。\n右側のマイクに向かってお話しください。"
-  ask_correct_phone_message : "ご連絡先の形式が\n正しくないようです。もう一度ご確認ください。"
-  ask_retry_message : "上手く聞き取れませんでした。\n{identity}をもう一度お願いします。"
-  ask_kb_message : "申し訳ございませんが、上手く聞き取れませんでした。キーボードからご入力ください。"
-  ask_phone_kb_message : "申し訳ございませんが、ご連絡先の形式が正しくないようです。キーボードからご入力ください。"
-  confirm_message: "{name}様、ご用件は「{purpose}」ですね。お間違いありませんか"
-  confirm_message_name_only: "{name}様ですね。お間違いありませんか"
-  confirm_message_purpose_only: "ご用件は「{purpose}」ですね。お間違いありませんか"
-  confirm_message_phone : "ご連絡先は表示内容でお間違いありませんか？"
-  confirm_message_default: "提供した情報はこのままでよろしいでしょうか？"
-  wait_message : "対応できる者にお繋ぎします。少々お待ちください。"
-  available_message : "{person}が玄関口まで参りますので、お待ちください。"
-  wait_2min_message : "{person}は2分以内にご対応いたしますが、お待ちいただけますでしょうか。"
-  can_wait_2min_message : "ありがとうございます。申し訳ございませんがしばらくお待ちください。"
-  cannot_wait_2min_message : "かしこまりました。申し訳ございませんが、後ほど住職から連絡を差し上げますので、{identity}をお伺いいたします。"
-  unavailable_message : "申し訳ございません。住職は、ただいま檀務で手が離せず、すぐにご対応することができません。{identity}を伺えれば、折り返しご連絡いたします。よろしいですか"
-  unavailable_deli_message : "申し訳ありません。ただいま手が離せない状況です。宅配のお荷物は屋外の宅配ボックスに宅配物をお入れください。対面対応が必要な場合は、不在伝票を郵便受けにお入れください。お中元、お歳暮等、荷物が多い場合やクール便は、玄関の左手のインターフォンを押してお待ちください。"
-  timeout_message : "タイムアウトしました。もう一度ボタンを押してください。"
-  apology_callback_message : "せっかくお越しいただいたのに、直接ご対応出来ず申し訳ございません。それでは、住職から折り返しご連絡させて頂きます。{new_line}本日はご来訪ありがとうございました。気を付けてお帰り下さい。"
-  apology_message : "せっかくお越しいただいたのに、直接ご対応出来ず申し訳ございません。{new_line}本日はご来訪ありがとうございました。気を付けてお帰り下さい。"
-  end_ask_phone : "申し訳ありません。正しい連絡先が貰えませんでしたので、受付を終了します。他に知りたいことがあったらもう一度ボタンを押してください。"
-  sonaemono_message : "お手持ちの品物とお布施は宅配ボックスに入れて、ロッカーをお閉めください。その後、宅配BOX右側面にある宅配BOX用のインターフォンを押してから、そのままお帰り下さい。"
-  decide_contact_message : "住職に連絡する方法を選択してください。"
-  dengon_message : "ご確認ありがとうございます。それでは住職へ伝言を申し伝えておきます。お気をつけてお帰り下さい。"
-  confirm_message_dengon: "{name}様、伝言内容は表示内容でお間違いありませんか。"
-  confirm_need_callback_text: "折り返しのご連絡は必要ですか？"
-  reply_message_for_yoyaku_nashi : "住職は現在不在です。アポイントのない業者様は、電話かホームページよりお問合せいただきアポイントを取ってからお越しください。飛び込み営業は受け付けておりません。"
-  message_for_direct_call : "住職へお電話ください。みどり色の通話ボタンを押すと、住職へ通話ができます。檀務などでお電話に出れない場合もございますが、ご了承ください。"
-  rag_fallback_message : "申し訳ありません。\nこちらではその内容には対応できかねます。\nもう一度ボタンを押してください。"
-  confirm_message_retry : "お答えがあいまいでしたので、確認させていただきます。口頭でお答えいただくか、画面のボタンからお選びください。"
-  correct_info_message : "情報に誤りがある場合は、修正したい項目をタップしてキーボードで編集し、画面の次へボタンを押してください。"
-  end_ask_phone_dengon : "申し訳ありません。正しい連絡先が貰えませんでしたので、受付を終了します。住職へ伝言を伝えておきます。お気をつけてお帰り下さい。"
-
+  
 greeting:
   greet_ja-JP : "こんにちは。ステラです。ご案内致しますので、何かお手伝いことありますか？\n"
   greet_en-US : "Hello, I am Stella. How can I assist you today?\n"

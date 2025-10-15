@@ -32,7 +32,7 @@ html, body {
 }
 
 #title {
-  font-size: 30px;
+  font-size: 50px;
   font-weight: 600;
   text-align: center;
   color: #111827;
@@ -40,23 +40,23 @@ html, body {
 }
 
 #branch-header {
-  font-size: 30px;
+  font-size: 50px;
   font-weight: 600;
   text-align: center;
   color: #111827;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 
 #nametitle {
-  font-size: 30px;
+  font-size: 60px;
   font-weight: 600;
   text-align: center;
   color: #111827;
-  margin-top: 50px;
+  margin-top: 10px;
 }
 
 #agent-name {
-  font-size: 30px;
+  font-size: 40px;
   font-weight: 700;
   text-align: center;
   color: #111827;
@@ -64,7 +64,7 @@ html, body {
 }
 
 #status-text {
-    font-size: 30px;
+    font-size: 40px;
     text-align: center;
     margin-top: 10px;
 }
@@ -89,8 +89,8 @@ html, body {
 #call-button {
   background-color: #22c55e;
   color: white;
-  width: 100px;
-  height: 50px;
+  width: 200px;
+  height: 150px;
   border-radius: 10%;
   display: flex;
   justify-content: center;
@@ -105,18 +105,18 @@ html, body {
 }
 
 #call-button svg {
-  width: 46px;
-  height: 46px;
+  width: 72px;
+  height: 72px;
   color: white;
 }
 
 #contact-button {
   background-color: #263A4D;
   color: white;
-  font-size: 20px;
+  font-size: 40px;
   text-align: center;
-  width: 150px;
-  height: 50px;
+  width: 250px;
+  height: 150px;
   border-radius: 5%;
   display: flex;
   justify-content: center;

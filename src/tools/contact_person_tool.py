@@ -26,7 +26,7 @@ class ContactPersonTool(BaseTool):
     ws_manager: Optional[WebSocketManager] = None
     message_manager: Optional[WebsocketMessageTemplate] = None
     session_manager: Optional[ChatSessionManager] = None
-    return_direct: bool = True
+    return_direct: bool = False
 
     async def contact_person(self):
         action_message = self.message_manager.url_action_message("http://localhost:8080/contactlist",
