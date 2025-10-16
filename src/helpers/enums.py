@@ -45,4 +45,5 @@ class ActionType(Enum):
     SHOW_POINT_OUT = "show_pointout"
     SET_LANGUAGE = "set_language"
     HIDE_WEBVIEW = "hide_webview"
+    SHOW_MAP = "show_map"
 

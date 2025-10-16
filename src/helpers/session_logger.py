@@ -12,7 +12,7 @@ def write_user_session_log(ctx):
         return  # No active session
 
     desktop_path = Path.home() / "Desktop"
-    user_log_dir = desktop_path / "AIアバターSTELLA" / "logs" / "user"
+    user_log_dir = desktop_path / "AIアバターSTELLAデモ版" / "logs" / "user"
 
     os.makedirs(user_log_dir, exist_ok=True)
 

@@ -4,6 +4,7 @@ tools:
   support_tool : True
   faq_tool : True
   websearch : False
+  show_map : True
 
 model:
   llm: 

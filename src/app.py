@@ -124,7 +124,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
             if data.type == MessageType.CHAT.value:
                 if session_manager.get_context_memory().session_id is not None:
-                    if session_manager.get_context_memory().last_tool_name == "weather_info" or session_manager.get_context_memory().last_tool_name == "contact_person":
+                    if session_manager.get_context_memory().last_tool_name == "weather_info" or session_manager.get_context_memory().last_tool_name == "contact_person" or session_manager.get_context_memory().last_tool_name == "show_map":
                         await ws_manager.send_to_client(
                             message_manager.action_message(ActionType.HIDE_WEBVIEW.value)
                         )
@@ -231,7 +231,7 @@ async def process_action(action_type: str, params):
             
         case ActionType.END_OF_TTS.value:
             if session_manager.get_context_memory().session_id is not None:
-                if session_manager.get_context_memory().last_tool_name == "weather_info":
+                if session_manager.get_context_memory().last_tool_name == "weather_info" or session_manager.get_context_memory().last_tool_name == "contact_person" or session_manager.get_context_memory().last_tool_name == "show_map":
                     await ws_manager.send_to_client(
                         message_manager.action_message(ActionType.SHOW_POINT_OUT.value)
                     )

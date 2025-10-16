@@ -4,6 +4,7 @@ from src.tools.information_tool import InformationTool
 from src.tools.contact_person_tool import ContactPersonTool
 from src.tools.weather_tool import ShowWeatherTool
 from src.tools.websearch_tool import WebSearchTool
+from src.tools.showmap_tool import ShowMapTool
 from src.tools.rag_builder import build_all_retrievers
 
 class ToolLoader:
@@ -56,11 +57,17 @@ class ToolLoader:
                 name="support_tool",
                 description="訪問者対応や顧客サポートに関する質問に答えるツール。",
             ),
+            "show_map": lambda: ShowMapTool(
+                ws_manager=self.ws_manager,
+                message_manager=self.message_manager,
+                session_manager=self.session_manager,
+                trigger_keywords=["地図", "マップ", "アクセス", "行き方", "map", "案内図", "場所"]
+            ),
         }
 
         # Map button ID to list of tools and their default
         self.button_tool_map: Dict[str, List[str]] = {
-            "button_1": ["weather_info", "websearch", "support_tool", "contact_person", "faq_tool"],
+            "button_1": ["weather_info", "websearch", "support_tool", "contact_person", "faq_tool", "show_map"],
         }
 
         self.default_tool_map: Dict[str, str] = {
