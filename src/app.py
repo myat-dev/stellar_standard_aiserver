@@ -90,17 +90,19 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         while True:
             try:
-                message = await asyncio.wait_for(websocket.receive_text(), timeout=60)
+                message = await asyncio.wait_for(websocket.receive_text(), timeout=120)
                 
             except asyncio.TimeoutError:
                 logger.info("Waiting for conection")
                 if not system_flags.get_phone_call_active():
-                    await ws_manager.send_to_client(
-                        message_manager.action_message(ActionType.SHOW_TOP.value)
-                    )
-                    # if session_manager.get_context_memory().session_id:
-                    #     await ws_manager.send_to_client(message_manager.chat_message("タイムアウトしました。もう一度ボタンを押してください。"))
-                    #     await end_session()
+                    # await ws_manager.send_to_client(
+                    #     message_manager.action_message(ActionType.SHOW_TOP.value)
+                    # )
+                    if session_manager.get_context_memory().session_id:
+                        await ws_manager.send_to_client(
+                            message_manager.chat_message("セッションがタイムアウトしました。")
+                        )
+                        await end_session()
                 continue
 
             if message == "exit":
@@ -157,7 +159,7 @@ async def process_action(action_type: str, params):
 
         case ActionType.END_SESSION.value:
             ws_manager.session_end_event.set()
-            await end_session()
+            await end_session_from_client()
         
         case ActionType.SET_LANGUAGE.value:
             logger.debug(f"Language selected: {params.name}")  # Debugging output
@@ -293,6 +295,15 @@ async def start_new_session_and_greet():
     session_manager.update_chat_history(greet_message, "")
     await ws_manager.send_to_client(message_manager.chat_message(greet_message))
 
+
+async def end_session_from_client():
+    greet_message = GREET_MSG[f"end_{server_config_loader.get_language()}"]
+    session_manager.update_chat_history(greet_message, "")
+    await ws_manager.send_to_client(message_manager.chat_message(greet_message))
+
+    session_manager.end_session()
+    ws_manager.clear_button_id()
+    ws_manager.waiting_for_response = False
 
 async def end_session():
     session_manager.end_session()

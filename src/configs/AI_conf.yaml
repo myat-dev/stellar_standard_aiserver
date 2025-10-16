@@ -33,12 +33,11 @@ greeting:
   greet_zh-CN : "您好，我是Stella。我能为您做些什么？\n"
   greet_ko-KR : "안녕하세요. 스텔라입니다. 안내해 드리겠습니다. 무엇을 도와드릴까요?\n"
   greet_es-ES : "Hola, soy Stella. ¿En qué puedo ayudarte hoy?\n"
-  general : "何のご用件でしょうか？\n右側のマイクに向かってお話しください。"
-  tsuketodoke : "付け届けのお渡しですが、\n対応できる者にお繋ぎしますので、\nお名前を教えていただけますか？\n右側のマイクに向かってお話しください。"
-  setsubiqa : "販売機や設備の不具合、使い方のご確認のこと\nですが、対応できる者にお繋ぎしますので、\nお名前を教えていただけますか？\n右側のマイクに向かってお話しください。"
-  gyosha : "業者様ですね。\n何のご用件でしょうか？\n右側のマイクに向かってお話しください。"
-  delivery : "今ひとを呼びましたので、しばらくお待ちください"
-  dengon : "住職への伝言をお伺いいたします。\n右側のマイクに向かってお話しください。"
+  end_ja-JP : "ステラリンクへお越しいただきありがとうございました。お気をつけてお帰りください。\n"
+  end_en-US : "Thank you for visiting StellarLink. I hope you have a great day.\n"
+  end_zh-CN : "感谢您访问StellarLink。希望您今天过得愉快。\n"
+  end_ko-KR : "StellarLink를 방문해 주셔서 감사합니다. 좋은 하루 되시길 바랍니다.\n"
+  end_es-ES : "Gracias por visitar StellarLink. Espero que tengas un buen día.\n"
 
 display_text:
   ask_phone_text: "ご連絡先を\nお伺いいたします。"

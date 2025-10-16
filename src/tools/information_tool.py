@@ -5,6 +5,7 @@ from langchain.callbacks.manager import (
     CallbackManagerForToolRun,
 )
 from langchain.tools import BaseTool
+from deep_translator import GoogleTranslator
 
 from src.helpers.enums import ActionType
 from src.api.websocket_manager import WebSocketManager
@@ -13,7 +14,7 @@ from src.message_templates.websocket_message_template import (
     UserProfile,
     WebsocketMessageTemplate,
 )
-from src.helpers.conf_loader import DAILOGUE
+from src.helpers.conf_loader import DAILOGUE, server_config_loader
 
 
 class InformationInput(BaseModel):
@@ -24,7 +25,7 @@ class InformationInput(BaseModel):
 class InformationTool(BaseTool):
     """Generic RAG-based tool for retrieving knowledge from a specific dataset."""
     name: str = "information_tool"
-    description: str = "知識ベース（FAQやサポート情報など）から情報を検索し、回答するためのツール。"
+    description: str = "知識ベース(FAQやサポート情報など)から情報を検索し、回答するためのツール。"
     args_schema: Type[BaseModel] = InformationInput
 
     retriever: Optional[Any] = None
@@ -32,7 +33,30 @@ class InformationTool(BaseTool):
     message_manager: Optional[WebsocketMessageTemplate] = None
     session_manager: Optional[ChatSessionManager] = None
     user_profile: Optional[UserProfile] = None
+    current_language: str = server_config_loader.get_language()
     return_direct: bool = False
+
+    def _get_base_language_code(self, lang_code: str) -> str:
+        """Extract base language code from locale (e.g., 'en-US' -> 'en')."""
+        if '-' in lang_code:
+            return lang_code.split('-')[0].lower()
+        return lang_code.lower()
+
+    # ----------- Translation Helper -----------
+    def _translate_to_japanese(self, query: str) -> str:
+        """Translate query to Japanese if not already in Japanese."""
+        self.current_language = self._get_base_language_code(self.current_language)
+        if self.current_language == "ja":
+            return query
+        
+        try:
+            translator = GoogleTranslator(source=self.current_language, target='ja')
+            translated = translator.translate(query)
+            print(f"[Translation] {self.current_language} -> ja: '{query}' -> '{translated}'")
+            return translated
+        except Exception as e:
+            print(f"[Translation Error] {e}, using original query")
+            return query
 
     # ----------- Main sync execution -----------
     def _run(
@@ -44,8 +68,11 @@ class InformationTool(BaseTool):
         if not self.retriever:
             return "RAG Retrieverが設定されていません。"
 
+        # Translate question to Japanese before retrieval
+        japanese_question = self._translate_to_japanese(question)
+
         try:
-            results = self.retriever.invoke(question)
+            results = self.retriever.invoke(japanese_question)
         except Exception as e:
             print(f"[RAG Error] {e}")
             return DAILOGUE.get("rag_fallback_message", "情報を取得できませんでした。")
@@ -69,8 +96,11 @@ class InformationTool(BaseTool):
 
         self.session_manager.context.last_tool_name = self.name
 
+        # Translate question to Japanese before retrieval
+        japanese_question = self._translate_to_japanese(question)
+
         try:
-            results = await self.retriever.ainvoke(question)
+            results = await self.retriever.ainvoke(japanese_question)
         except Exception as e:
             print(f"[RAG Async Error] {e}")
             return DAILOGUE.get("rag_fallback_message", "情報を取得できませんでした。")
