@@ -20,7 +20,7 @@ class ContactPersonToolInput(BaseModel):
 class ContactPersonTool(BaseTool):
     name: str = "contact_person"
     description: str = (
-        "担当者と直接繋ぐツール"
+        "担当者に直接繋ぐツール"
     )
     args_schema: Type[BaseModel] = ContactPersonToolInput
     ws_manager: Optional[WebSocketManager] = None
@@ -33,7 +33,7 @@ class ContactPersonTool(BaseTool):
             ActionType.SHOW_PHONE_PAGE.value
         )
         await self.ws_manager.send_to_client(action_message)
-        return "担当者とお繋ぎしますので、担当者をお選びください。" 
+        return "担当者にお繋ぎしますので、担当者をお選びください。" 
 
     def _run(
         self,
