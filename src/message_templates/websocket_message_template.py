@@ -1,6 +1,6 @@
 import json
 from src.helpers.logger import logger
-from src.helpers.enums import MessageType
+from src.helpers.enums import MessageType, ActionType
 
 
 class ChatMessage:
@@ -39,6 +39,58 @@ class UserProfile:
     def __str__(self):
         """Return a human-readable string when printing the object."""
         return f"UserProfile(name='{self.name}', contact='{self.contact}', purpose='{self.purpose}')"
+
+    def __repr__(self):
+        """Return the official string representation."""
+        return self.__str__()
+
+class LanguageData:
+    def __init__(self, language: str = None):
+        self.language = language
+
+    def to_dict(self) -> dict:
+        """Convert LanguageData to a dictionary, replacing None with empty strings."""
+        return {
+            "language": self.language or "",
+        }
+
+    def to_json(self) -> str:
+        """Convert LanguageData to JSON."""
+        return json.dumps(self.to_dict())
+    
+    def __str__(self):
+        """Return a human-readable string when printing the object."""
+        return f"LanguageData(language='{self.language}')"
+
+    def __repr__(self):
+        """Return the official string representation."""
+        return self.__str__()
+
+class LocationData:
+    def __init__(self, city: str = None, region: str = None, lat: float = None, lon: float = None, prefecture: str = None):
+        self.city = city
+        self.region = region
+        self.lat = lat
+        self.lon = lon
+        self.prefecture = prefecture
+
+    def to_dict(self) -> dict:
+        """Convert LocationData to a dictionary, replacing None with empty strings."""
+        return {
+            "city": self.city or "",
+            "region": self.region or "",
+            "lat": self.lat or 0.0,
+            "lon": self.lon or 0.0,
+            "prefecture": self.prefecture or "",
+        }
+
+    def to_json(self) -> str:
+        """Convert LocationData to JSON."""
+        return json.dumps(self.to_dict())
+    
+    def __str__(self):
+        """Return a human-readable string when printing the object."""
+        return f"LocationData(city='{self.city}', region='{self.region}', lat={self.lat}, lon={self.lon}, prefecture='{self.prefecture}')"
 
     def __repr__(self):
         """Return the official string representation."""
@@ -179,6 +231,33 @@ class WebsocketMessageTemplate:
     ) -> UserProfile:
         """Create a UserProfile object with optional params."""
         return UserProfile(name, contact, purpose)
+    
+    def location_param(
+        self, city: str = None, region: str = None, lat: float = None, lon: float = None, prefecture: str = None
+    ) -> LocationData:      
+        """Create a LocationData object with optional params."""
+        return LocationData(city, region, lat, lon, prefecture)
+    
+    def parse_action_params(self, params: dict, action_type: str):
+        """Parse action parameters based on action type."""
+        if action_type == ActionType.SET_LOCATION.value:
+            return LocationData(
+                params.get("city"),
+                params.get("region"),
+                params.get("lat"),
+                params.get("lon"),
+                params.get("prefecture"),
+            )
+        elif action_type == ActionType.SET_LANGUAGE.value:
+            return LanguageData(params.get("name"))
+        else:
+            if isinstance(params, UserProfile): 
+                params = params.to_dict()
+            return UserProfile(
+                params.get("name"),
+                params.get("contact"),
+                params.get("purpose"),
+            )
 
     def parse_message(self, message: dict):
         """Parse incoming message and return the appropriate object."""
@@ -190,18 +269,7 @@ class WebsocketMessageTemplate:
         elif message_type == MessageType.ACTION.value:
             action_type = message.get("action_type")
             params_data = message.get("params", {})
-
-            # Ensure params is a dictionary, not an object reference
-            if isinstance(
-                params_data, UserProfile
-            ):  # Check if incorrectly parsed as object
-                params_data = params_data.to_dict()
-
-            params = UserProfile(
-                params_data.get("name"),
-                params_data.get("contact"),
-                params_data.get("purpose"),
-            )
+            params = self.parse_action_params(params_data, action_type)
             return ActionMessage(action_type, params)
 
         elif message_type == MessageType.CHAT_ACTION.value:

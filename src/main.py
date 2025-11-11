@@ -9,6 +9,7 @@ session_manager = ChatSessionManager()
 ws_manager = WebSocketManager()
 message_manager = WebsocketMessageTemplate()
 user_profile = message_manager.contact_param()
+location_data = message_manager.location_param()
 
 prompt_manager = PromptManager()
 agent_executor = AgentManager(

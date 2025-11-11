@@ -16,7 +16,7 @@ from src.helpers.enums import ActionType, MessageType, Mode
 from src.helpers import system_flags
 from src.helpers.website_handler import handle_phonecall_action
 from src.llm.llm_manager import is_valid_japanese_phone_number
-from src.message_templates.websocket_message_template import UserProfile
+from src.message_templates.websocket_message_template import LanguageData
 from src.main import (
     agent_executor,
     message_manager,
@@ -85,7 +85,7 @@ async def websocket_endpoint(websocket: WebSocket):
     await ws_manager.connect(websocket)
     #send current language
     await ws_manager.send_to_client(
-        message_manager.action_message(ActionType.SET_LANGUAGE.value, UserProfile(name=server_config_loader.get_language()))
+        message_manager.action_message(ActionType.SET_LANGUAGE.value, LanguageData(language=server_config_loader.get_language()))
     )
     try:
         while True:
@@ -132,7 +132,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     asyncio.create_task(process_chat(data.message))
                         
             elif data.type == MessageType.ACTION.value:
-                if session_manager.get_context_memory().session_id is not None or data.action_type == ActionType.START_SESSION.value or data.action_type == ActionType.PHONECALL_ACTION.value or data.action_type == ActionType.PHONEEND_ACTION.value or data.action_type == ActionType.CHECK_CURRENT_MODE.value or data.action_type == ActionType.SET_LANGUAGE.value:
+                if session_manager.get_context_memory().session_id is not None or data.action_type == ActionType.START_SESSION.value or data.action_type == ActionType.PHONECALL_ACTION.value or data.action_type == ActionType.PHONEEND_ACTION.value or data.action_type == ActionType.CHECK_CURRENT_MODE.value or data.action_type == ActionType.SET_LANGUAGE.value or data.action_type == ActionType.SET_LOCATION.value:
                     asyncio.create_task(process_action(data.action_type, data.params))
 
             elif data.type == MessageType.CHAT_ACTION.value:
@@ -162,19 +162,23 @@ async def process_action(action_type: str, params):
             await end_session_from_client()
         
         case ActionType.SET_LANGUAGE.value:
-            logger.debug(f"Language selected: {params.name}")  # Debugging output
-            if params.name:
-                server_config_loader.update_language(params.name)
-
+            logger.debug(f"Language selected: {params.language}")  
+            if params.language:
+                server_config_loader.update_language(params.language)
+        
+        case ActionType.SET_LOCATION.value:
+            logger.debug(f"Set Location: {params.city}")  
+            ws_manager.set_location_data(params)
+            
         case ActionType.INPUT_NAME.value:
-            logger.debug(f"Name received: {params.name}")  # Debugging output
+            logger.debug(f"Name received: {params.name}")  
             if params.name:
                 user_profile.name = params.name
                 session_manager.get_context_memory().name = params.name
                 session_manager.update_chat_history(params.name, "")
 
         case ActionType.INPUT_PHONE.value:
-            logger.debug(f"Contact received: {params.contact}")  # Debugging output
+            logger.debug(f"Contact received: {params.contact}")  
             if params.contact:
                 user_profile.contact = params.contact
                 session_manager.get_context_memory().contact = params.contact

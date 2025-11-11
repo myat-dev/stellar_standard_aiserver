@@ -27,61 +27,6 @@ class ShowWeatherTool(BaseTool):
     session_manager: Optional[ChatSessionManager] = None
     return_direct: bool = False
 
-    JAPAN_CITIES: ClassVar[Dict[str, Dict[str, str]]] = {
-        'Sapporo': {'code': '1/1/1400', 'prefecture': '北海道'},
-        '札幌市': {'code': '1/1/1400', 'prefecture': '北海道'},
-        'Hakodate': {'code': '1/2/1300', 'prefecture': '北海道'},
-        '函館市': {'code': '1/2/1300', 'prefecture': '北海道'},
-        'Sendai': {'code': '2/4/3410', 'prefecture': '宮城県'},
-        '仙台市': {'code': '2/4/3410', 'prefecture': '宮城県'},
-        'Tokyo': {'code': '3/16', 'prefecture': '東京都'},
-        '東京都': {'code': '3/16', 'prefecture': '東京都'},
-        'Yokohama': {'code': '3/16/4610', 'prefecture': '神奈川県'},
-        '横浜市': {'code': '3/16/4610', 'prefecture': '神奈川県'},
-        'Osaka': {'code': '6/30/6200', 'prefecture': '大阪府'},
-        '大阪市': {'code': '6/30/6200', 'prefecture': '大阪府'},
-        'Nagoya': {'code': '5/23/5110', 'prefecture': '愛知県'},
-        '名古屋市': {'code': '5/23/5110', 'prefecture': '愛知県'},
-        'Fukuoka': {'code': '9/43/8310', 'prefecture': '福岡県'},
-        '福岡市': {'code': '9/43/8310', 'prefecture': '福岡県'},
-        'Naha': {'code': '10/47/9110', 'prefecture': '沖縄県'},
-        '那覇市': {'code': '10/47/9110', 'prefecture': '沖縄県'},
-    }
-
-    async def get_location(self) -> dict:
-        """Get current location using IP geolocation"""
-        try:
-            async with aiohttp.ClientSession() as session:
-                async with session.get('http://ip-api.com/json/') as response:
-                    if response.status == 200:
-                        data = await response.json()
-                        city = data.get('city', 'Tokyo')
-                        region = data.get('regionName', '')
-                        lat = data.get('lat')
-                        lon = data.get('lon')
-
-                        city_info = self.JAPAN_CITIES.get(city)
-                        return {
-                            'city': city,
-                            'region': region,
-                            'country': data.get('country', ''),
-                            'lat': lat,
-                            'lon': lon,
-                            'prefecture': city_info['prefecture'] if city_info else region
-                        }
-        except Exception as e:
-            print(f"Location detection error: {e}")
-
-        # fallback to Tokyo
-        return {
-            'city': 'Tokyo',
-            'region': 'Tokyo',
-            'country': 'Japan',
-            'lat': 35.6762,
-            'lon': 139.6503,
-            'prefecture': '東京都'
-        }
-
     async def get_weather_forecast(self, lat: float, lon: float) -> dict:
         """Get weather forecast using Open-Meteo API"""
         try:
@@ -216,8 +161,9 @@ class ShowWeatherTool(BaseTool):
 
     async def show_weather_info(self):
         """Main execution: detect location, get weather, format + send"""
-        location = await self.get_location()
-        weather = await self.get_weather_forecast(location['lat'], location['lon'])
+        location = self.ws_manager.get_location_data().to_dict()
+        print(f"Retrieved location data in ShowWeatherTool: {location}")
+        weather = await self.get_weather_forecast(location["lat"], location['lon'])
         website_url = self.get_weather_website_url(location)
         response_message = self.format_weather_message(location, weather, website_url)
 

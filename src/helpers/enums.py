@@ -46,4 +46,5 @@ class ActionType(Enum):
     SET_LANGUAGE = "set_language"
     HIDE_WEBVIEW = "hide_webview"
     SHOW_MAP = "show_map"
+    SET_LOCATION = "set_location"
 

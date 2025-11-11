@@ -18,6 +18,7 @@ class WebSocketManager:
         self.button_id: Optional[str] = None
         self.session_end_event = asyncio.Event()
         self.touch_event = None
+        self.location_data = None
 
     def set_button_id(self, button_id: str):
         self.button_id = button_id
@@ -28,6 +29,12 @@ class WebSocketManager:
     def clear_button_id(self):
         """ボタンIDをクリアする。"""
         self.button_id = None
+    
+    def set_location_data(self, location_data: dict):
+        self.location_data = location_data
+    
+    def get_location_data(self) -> Optional[dict]:
+        return self.location_data
 
     async def connect(self, websocket: WebSocket):
         """WebSocket接続を受け付ける。"""
